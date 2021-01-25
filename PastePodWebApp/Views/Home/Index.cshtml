@@ -1,8 +1,11 @@
-﻿@{
+﻿@model TextDocumentViewModel
+@{
     ViewData["Title"] = "Home Page";
+    Layout = "_LayoutForPastePage";
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<form style="height: 100%;width: 100%;margin:0" method="post">
+    @Html.TextArea("TextContent", (string)(ViewBag.DocumentContent != null ? ViewBag.DocumentContent : ""), new { @Class = "bg-dark text-light", @Required = true, @Style = "border-style: none;width: 100%;height: 100%;padding: 30px;margin: 0" });
+    <div style="position: absolute;right: 10px;top:10px">
+        <button class="bg-dark text-white btn rounded-0 p-1" title="Save document" style="font-size: 1.5em;"><i class="fas fa-save"></i></button>
+    </div>
+</form>
