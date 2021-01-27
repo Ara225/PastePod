@@ -29,5 +29,11 @@ namespace PastePodWebApp.Data
         {
             return Task.FromResult(System.IO.File.ReadAllText(fileName));
         }
+
+        public static Task<List<TextDocumentModel>> GetDocumentsByUserId(TextDocumentDbContext context, string userId)
+        {
+            List<TextDocumentModel> documents = context.TextDocuments.Where((item) => item.OwnerId == userId).ToList();
+            return Task.FromResult(documents);
+        }
     }
 }

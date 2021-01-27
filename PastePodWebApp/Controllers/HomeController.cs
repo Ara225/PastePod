@@ -30,9 +30,7 @@ namespace PastePodWebApp.Controllers
                 Guid test;
                 if (fileName != null && Guid.TryParse(fileName, out test)) 
                 {
-                    Debug.WriteLine(fileName);
                     string fileContent = await DataAccess.GetDocument(fileName);
-                    Debug.WriteLine(fileContent);
                     ViewBag.DocumentContent = fileContent;
                 }
             }
