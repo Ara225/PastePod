@@ -43,7 +43,6 @@ namespace PastePodWebApp.Controllers
         {
             UserManager<IdentityUser> _UserManager = (UserManager<IdentityUser>)HttpContext.RequestServices.GetService(typeof(UserManager<IdentityUser>));
             IdentityUser User = await _UserManager.GetUserAsync(HttpContext.User);
-            Debug.WriteLine(User);
             string fileName = await DataAccess.SaveDocument(model, User, _context);
             return Redirect("/Home/Index/" + fileName);
         }
