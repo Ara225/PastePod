@@ -13,7 +13,7 @@
             <button class="bg-dark text-white btn rounded-0 p-1" title="Save document" style="font-size: 1.5em;"><i class="fas fa-save"></i></button>
             @if (SignInManager.IsSignedIn(User))
             {
-                <a class="nav-link text-white" asp-area="Identity" asp-page="/Account/Logout" title="Sign out of your account" style="font-size: 1.5em;"><i class="fas fa-sign-out-alt"></i></a>
+                <a class="nav-link text-white" onclick="document.getElementById('logoutForm').submit();" href="#" title="Sign out of your account" style="font-size: 1.5em;"><i class="fas fa-sign-out-alt"></i></a>
             }
             else
             {
@@ -21,4 +21,7 @@
             }
         </div>
     </div>
+</form>
+<form class="form-inline d-none" id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+    <button type="submit" class="btn btn-link text-dark" title="Sign out of your account" style="font-size: 1.5em;"><i class="fas fa-sign-out-alt"></i></button>
 </form>
