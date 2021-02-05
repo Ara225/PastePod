@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using PastePodWebApp.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace PastePodWebApp.Controllers
 {
@@ -40,7 +41,10 @@ namespace PastePodWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(TextDocumentViewModel model)
         {
-            string fileName = await DataAccess.SaveDocument(model, _context);
+            UserManager<IdentityUser> _UserManager = (UserManager<IdentityUser>)HttpContext.RequestServices.GetService(typeof(UserManager<IdentityUser>));
+            IdentityUser User = await _UserManager.GetUserAsync(HttpContext.User);
+            Debug.WriteLine(User);
+            string fileName = await DataAccess.SaveDocument(model, User, _context);
             return Redirect("/Home/Index/" + fileName);
         }
 

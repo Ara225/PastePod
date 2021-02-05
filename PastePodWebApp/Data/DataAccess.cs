@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using PastePodWebApp.Models;
 
 namespace PastePodWebApp.Data
 {
     public static class DataAccess
     {
-        public static Task<string> SaveDocument(TextDocumentViewModel modal, TextDocumentDbContext context)
+        public static Task<string> SaveDocument(TextDocumentViewModel modal, IdentityUser user, TextDocumentDbContext context)
         {
             string fileName = Guid.NewGuid().ToString();
             System.IO.File.WriteAllText(fileName, modal.TextContent);
@@ -18,7 +19,7 @@ namespace PastePodWebApp.Data
                 CreatedOn = DateTime.Now,
                 ExpiresOn = DateTime.Now.AddDays(30.0),
                 FileName = fileName,
-                OwnerId = null
+                OwnerId = user == null ? null : user.Id
             };
             context.Add(document);
             context.SaveChanges();
