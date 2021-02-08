@@ -2,9 +2,29 @@
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" rel="stylesheet">
+
     <title>@ViewData["Title"] - PastePod</title>
 </head>
 <body style="margin: 0; padding: 0;height:100%;">
     @RenderBody()
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+    <script type="module">
+        import { CodeJar } from "https://medv.io/codejar/codejar.js"
+        const highlight = editor => {
+            editor.textContent = editor.textContent
+            hljs.highlightBlock(editor)
+        }
+        import { withLineNumbers } from "https://medv.io/codejar/linenumbers.js"
+
+        const node = document.querySelector("#editor")
+
+        const editor = CodeJar(node, withLineNumbers(highlight), { tab: "  " })
+        let code = `@(ViewBag.DocumentContent != null ? (string)ViewBag.DocumentContent.Replace("`", "\\`") : "")`
+        editor.onUpdate(code => {
+            document.getElementById("TextContent").value = code
+        })
+        editor.updateCode(code)
+    </script>
 </body>
 </html>
