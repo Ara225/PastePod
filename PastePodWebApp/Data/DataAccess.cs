@@ -26,7 +26,7 @@ namespace PastePodWebApp.Data
             return Task.FromResult(fileName);
         }
 
-        public static Task<string> GetDocument(string fileName)
+        public static Task<string> GetDocumentContents(string fileName)
         {
             return Task.FromResult(System.IO.File.ReadAllText(fileName));
         }
@@ -43,6 +43,12 @@ namespace PastePodWebApp.Data
         {
             List<TextDocumentModel> documents = context.TextDocuments.Where((item) => item.OwnerId == userId).ToList();
             return Task.FromResult(documents);
+        }
+
+        public static Task<TextDocumentModel> GetDocumentDbRecord(TextDocumentDbContext context, string fileName)
+        {
+            TextDocumentModel document = context.TextDocuments.Where((item) => item.FileName == fileName).ToList()[0];
+            return Task.FromResult(document);
         }
     }
 }

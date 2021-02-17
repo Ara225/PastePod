@@ -31,7 +31,7 @@ namespace PastePodWebApp.Controllers
                 Guid test;
                 if (fileName != null && Guid.TryParse(fileName, out test)) 
                 {
-                    string fileContent = await DataAccess.GetDocument(fileName);
+                    string fileContent = await DataAccess.GetDocumentContents(fileName);
                     ViewBag.DocumentContent = fileContent;
                 }
             }
@@ -62,12 +62,25 @@ namespace PastePodWebApp.Controllers
                 Guid test;
                 if (fileName != null && Guid.TryParse(fileName, out test))
                 {
-                    string fileContent = await DataAccess.GetDocument(fileName);
+                    string fileContent = await DataAccess.GetDocumentContents(fileName);
                     model.TextContent = fileContent;
                     model.FileName = fileName;
                 }
             }
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(TextDocumentViewModel model)
+        {
+            UserManager<IdentityUser> _UserManager = (UserManager<IdentityUser>)HttpContext.RequestServices.GetService(typeof(UserManager<IdentityUser>));
+            IdentityUser User = await _UserManager.GetUserAsync(HttpContext.User);
+            TextDocumentModel document = await DataAccess.GetDocumentDbRecord(_context, model.FileName);
+            if (document.OwnerId == User.Id)
+            {
+                await DataAccess.DeleteDocument(_context, document.FileName);
+            }
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
