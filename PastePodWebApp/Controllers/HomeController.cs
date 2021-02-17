@@ -52,6 +52,24 @@ namespace PastePodWebApp.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Delete()
+        {
+            TextDocumentViewModel model = new Models.TextDocumentViewModel();
+            if (Request.Path.HasValue)
+            {
+                string[] path = Request.Path.Value.Split("/");
+                string fileName = path[path.Count() - 1];
+                Guid test;
+                if (fileName != null && Guid.TryParse(fileName, out test))
+                {
+                    string fileContent = await DataAccess.GetDocument(fileName);
+                    model.TextContent = fileContent;
+                    model.FileName = fileName;
+                }
+            }
+            return View(model);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

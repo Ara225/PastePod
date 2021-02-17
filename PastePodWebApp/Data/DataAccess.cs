@@ -31,6 +31,14 @@ namespace PastePodWebApp.Data
             return Task.FromResult(System.IO.File.ReadAllText(fileName));
         }
 
+        public static Task DeleteDocument(TextDocumentDbContext context, string fileName)
+        {
+            System.IO.File.Delete(fileName);
+            context.Remove(context.TextDocuments.Where((item) => item.FileName == fileName).ToList()[0]);
+            context.SaveChanges();
+            return Task.FromResult(0);
+        }
+
         public static Task<List<TextDocumentModel>> GetDocumentsByUserId(TextDocumentDbContext context, string userId)
         {
             List<TextDocumentModel> documents = context.TextDocuments.Where((item) => item.OwnerId == userId).ToList();
