@@ -43,8 +43,24 @@ namespace PastePodWebApp.Controllers
         {
             UserManager<IdentityUser> _UserManager = (UserManager<IdentityUser>)HttpContext.RequestServices.GetService(typeof(UserManager<IdentityUser>));
             IdentityUser User = await _UserManager.GetUserAsync(HttpContext.User);
-            string fileName = await DataAccess.SaveDocument(model, User, _context);
-            return Redirect("/Home/Index/" + fileName);
+            model.FileName = null;
+            if (Request.Path.HasValue)
+            {
+                string[] path = Request.Path.Value.Split("/");
+                string fileName = path[path.Count() - 1];
+                Guid test;
+                if (fileName != null && Guid.TryParse(fileName, out test))
+                {
+                    TextDocumentModel document = await DataAccess.GetDocumentDbRecord(_context, fileName);
+                    if (document.OwnerId == User.Id)
+                    {
+                        model.FileName = document.FileName;
+                    }
+                }
+            }
+            string pathName = await DataAccess.SaveDocument(model, User, _context);
+            Debug.WriteLine(model.TextContent);
+            return Redirect("/Home/Index/" + pathName);
         }
 
         public IActionResult Privacy()

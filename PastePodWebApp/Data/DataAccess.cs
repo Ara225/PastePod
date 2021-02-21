@@ -9,26 +9,38 @@ namespace PastePodWebApp.Data
 {
     public static class DataAccess
     {
-        public static Task<string> SaveDocument(TextDocumentViewModel modal, IdentityUser user, TextDocumentDbContext context)
+        public static async Task<string> SaveDocument(TextDocumentViewModel modal, IdentityUser user, TextDocumentDbContext context)
         {
-            string fileName = Guid.NewGuid().ToString();
-            System.IO.File.WriteAllText(fileName, modal.TextContent);
-            TextDocumentModel document = new TextDocumentModel
+            string fileName = modal.FileName != null ? modal.FileName : Guid.NewGuid().ToString();
+            System.Diagnostics.Debug.WriteLine(modal.TextContent);
+            System.IO.File.WriteAllText(fileName, modal.TextContent, System.Text.Encoding.UTF8);
+            TextDocumentModel document;
+            if (modal.FileName != null)
             {
-                TextContentShort = modal.TextContent.Count() >= 200 ? modal.TextContent.Substring(0, 200) : modal.TextContent,
-                CreatedOn = DateTime.Now,
-                ExpiresOn = DateTime.Now.AddDays(30.0),
-                FileName = fileName,
-                OwnerId = user == null ? null : user.Id
-            };
-            context.Add(document);
+                document = await DataAccess.GetDocumentDbRecord(context, fileName);
+                document.TextContentShort = modal.TextContent.Count() >= 200 ? modal.TextContent.Substring(0, 200) : modal.TextContent;
+                document.FileName = fileName;
+                context.Update(document);
+            }
+            else
+            {
+                document = new TextDocumentModel
+                {
+                    TextContentShort = modal.TextContent.Count() >= 200 ? modal.TextContent.Substring(0, 200) : modal.TextContent,
+                    FileName = fileName,
+                    OwnerId = user == null ? null : user.Id,
+                    CreatedOn = DateTime.Now,
+                    ExpiresOn = DateTime.Now.AddDays(30.0)
+                };
+                context.Add(document);
+            }
             context.SaveChanges();
-            return Task.FromResult(fileName);
+            return fileName;
         }
 
         public static Task<string> GetDocumentContents(string fileName)
         {
-            return Task.FromResult(System.IO.File.ReadAllText(fileName));
+            return Task.FromResult(System.IO.File.ReadAllText(fileName, System.Text.Encoding.UTF8));
         }
 
         public static Task DeleteDocument(TextDocumentDbContext context, string fileName)
