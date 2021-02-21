@@ -7,7 +7,7 @@
     Layout = "_LayoutForPastePage";
 }
 <form style="height: 100%;width: 100%;margin:0" method="post">
-    <textarea asp-for="TextContent" required class="d-none"></textarea>
+    @Html.TextArea("TextContent", (string)(ViewBag.DocumentContent != null ? ViewBag.DocumentContent : ""), new { @Required = true, @Style = "display:none" })
     <div class="editor" id="editor" data-gramm="false" style="border-style: none;width: 100%;height: 100%;"></div>
     <div style="position: absolute;right: 25px;top:10px">
         <div class="row">

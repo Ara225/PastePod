@@ -20,12 +20,11 @@
         const node = document.querySelector("#editor")
 
         const editor = CodeJar(node, withLineNumbers(highlight), { tab: "  " })
-        let code = `@(ViewBag.DocumentContent != null ? (string)ViewBag.DocumentContent.Replace("`", "\\`") : "")`
+        let code = document.getElementById("TextContent").value
         editor.onUpdate(code => {
             document.getElementById("TextContent").value = code
         })
         editor.updateCode(code)
-        document.getElementById("TextContent").value = code
     </script>
 </body>
 </html>
