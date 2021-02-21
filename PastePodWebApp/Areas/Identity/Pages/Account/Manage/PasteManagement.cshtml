@@ -1,0 +1,56 @@
+@page
+@model PasteManagement
+@{
+    ViewData["Title"] = "Manage Email";
+    ViewData["ActivePage"] = ManageNavPages.PasteManagement;
+}
+
+<h4>@ViewData["Title"]</h4>
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Text
+            </th>
+            <th>
+                Created On
+            </th>
+            <th>
+                Expires On
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.TextDocumentList) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TextContentShort)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedOn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpiresOn)
+            </td>
+            <td>
+                <a asp-area="" asp-controller="Home" asp-action="Index" asp-route-id="@item.FileName">Edit</a> 
+                <a asp-action="Delete" asp-route-id="@item.FileName">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
